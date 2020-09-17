@@ -25,9 +25,11 @@ const main = async () => {
       }
     ));
     const result = await returnTasks(taskResults);
-    console.log(result);
+    console.log('[main] result = ', result);
     await sleep(1 * 1000);
+    if (tasks.length === 0) break;
   }
+  console.log('[done]');
 };
 
 export default main;
