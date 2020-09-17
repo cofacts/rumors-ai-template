@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "start:model:fast": "npm run build && node dist/model.js"
+    "start:model:fast": "npm run build && MODE=fast node dist/model.js",
+    "start:model:slow": "npm run build && MODE=slow node dist/model.js"
   },
   "author": "",
   "license": "ISC",
