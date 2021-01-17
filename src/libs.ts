@@ -1,4 +1,4 @@
-import fetch from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 
 export type CategoryId =
   'my-model-id-0' |
@@ -75,6 +75,15 @@ export const sleep = async (s: number) => {
   return new Promise(r => setTimeout(r, s));
 };
 
+const handleError = async (response: Response) => {
+  if (response.status !== 200) {
+    console.error(response.status);
+    console.error(response.statusText);
+    throw new Error(`API Error: ${response.status}, ${response.statusText}`);
+  }
+  return response.json();
+};
+
 export const createModel = async (name: string, realtime: boolean = true): Promise<Model> => {
   const url = `${API_URL}/models`;
   const response = await fetch(url, {
@@ -107,13 +116,7 @@ export const createModel = async (name: string, realtime: boolean = true): Promi
     },
   });
 
-  if (response.status !== 200) {
-    console.error(response.status);
-    console.error(response.statusText);
-    console.error(response.text);
-  }
-
-  return await (response).json();
+  return handleError(response);
 };
 
 export const getModels = async (): Promise<Model[]> => {
@@ -123,17 +126,18 @@ export const getModels = async (): Promise<Model[]> => {
 
 export const getTasks = async (modelId: string, apiKey: string): Promise<Task[]> => {
   const url = `${API_URL}/tasks?modelId=${modelId}&apiKey=${apiKey}`;
-  return (await fetch(url)).json();
+  const response = await fetch(url);
+  return handleError(response);
 };
 
 export const returnTasks = async (taskResult: TaskResult[]) => {
   const url = `${API_URL}/tasks`;
-  const result = await (await fetch(url, {
+  const response = await fetch(url, {
     method: 'post',
     body: JSON.stringify(taskResult),
     headers: {
       'content-type': 'application/json',
     },
-  })).json();
-  return result;
+  });
+  return handleError(response);
 };
