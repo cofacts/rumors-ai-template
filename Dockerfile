@@ -14,5 +14,16 @@ RUN npm install
 
 # Bundle app source
 COPY . .
+RUN npm run build
 
-CMD npm run start:model:${MODE:-fast}
+ENV CFA_URL="https://ai-api-stag.cofacts.org/"
+ENV CFA_ACTION="register"
+
+# for action: start
+ENV CFA_API_KEY=""
+
+# for action: start
+# the id of model, it will be no longer to use in the future
+ENV CFA_ID=""
+
+CMD node dist/index.js
